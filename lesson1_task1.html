@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+  <button id ="stopMachine" onclick="stop()">Стоп!</button>
+
+<script>
+/* ДЗ
+доработать кофеварку
+ввести значение зерен
+проверка на пустую кофеварку
+реализовать кнопку стоп
+* время приготовления зависит от кол-ва зерен
+*/
+    function CoffeeMachine(power) {
+      // удельная теплоемкость воды
+      const waterHeatCapacity = 4200
+      // температура воды до которой греем
+      const maxTemp = 90
+      // колличество воды в кофеварке
+      let waterAmount = 0
+      // колличество порций кофе
+      let coffeeCups = 0
+      // скорость помола зёрен на одну порцию
+      const millingTime = 500
+
+
+      this.fill = function (newAmount, coffeeBeans) {
+          waterAmount = newAmount
+          coffeeCups = Math.floor(coffeeBeans / 7)
+      }
+
+      const checkFilling = function (waterAmount, coffeeCups) {
+        if (waterAmount >= 50 && coffeeCups >= 1) {
+          return true
+        } else {
+          return false
+        }
+      }
+
+      const getBoilTime = function () {
+        if (checkFilling(waterAmount, coffeeCups)){
+        return (waterAmount * waterHeatCapacity * maxTemp) / power + coffeeCups * millingTime
+        } else {
+          console.error('Проверьте заполненность емкостей с водой и кофе!')
+        }
+      }
+
+
+      this.launch = function () {
+        
+        let timeoutID 
+
+        const time = getBoilTime()
+        if (time !== undefined){
+          console.info(`Время ожидания: ${time}`)
+          timeoutID = setTimeout(function () {
+          console.log('Ваш кофе готов!')
+          }, time)
+
+          let button = document.getElementById('stopMachine')
+          button.onclick = function stop() {
+            clearTimeout(timeoutID)
+            console.log('Работа кофеварки прекращена') 
+        }
+        } else {
+          console.error('Произошла ошибка!')
+        }
+      }
+
+
+    }
+
+    var vitek = new CoffeeMachine(3000)
+    vitek.fill(50, 21)
+    vitek.launch()
+</script>
+</body>
+</html>
