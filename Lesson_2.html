@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+
+    <ul class="list-group users-list">
+        <li class="list-group-item"></li>
+    </ul>
+
+  <form class="user-form mt-5" id = "user">
+
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" placeholder="Your name">
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email address</label>
+      <input type="email" class="form-control" id="email" placeholder="Enter email">
+    </div>
+
+    <div class="form-group">
+        <label for="age">Age</label>
+        <input type="text" class="form-control" id="age" placeholder="Your age">
+      </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+  </form>
+
+</div>
+
+<script>
+  const userList = document.querySelector('.users-list');  // переменная списка для выгрузки пользователей с сервера
+
+  const input = [... document.querySelectorAll(".user-form input")]; // выгружаем массив из формы
+  
+  const userForm = document.querySelector('.user-form'); // переменная для привязки события
+  
+  userForm.addEventListener('submit', function (e){ // создаём событие при нажатии на кнопку
+    event.preventDefault();
+    const [name, email, age] = input.map(function(input){ //заполняем поля данными из формы
+      return input.value;
+    })
+    const userObj = { //создаём объект для загрузки
+      name,
+      email,
+      age,
+    }
+  
+    const request = new XMLHttpRequest(); //создаём объект для запроса
+    request.open('POST', 'http://89.108.65.123/user'); //инициализируем его через метод open
+    request.send(JSON.stringify(userObj)); //отправляем запрос в формате json
+    request.onreadystatechange = function () { // отслеживает состояние запроса до полного завершения
+      if (request.readyState == 4 && request.status == 200){
+        alert(`Пользователь ${name} создан`); 
+      }
+    }
+  });
+
+  const getUsers = function (){
+    const request = new XMLHttpRequest(); //создаём объект для запроса
+    request.open('GET', 'http://89.108.65.123/user'); //инициализируем его через метод open
+    request.send(); //отправляем запрос
+    request.onreadystatechange = function () { // отслеживает состояние запроса до полного завершения
+      if (request.readyState == 4 && request.status == 200){
+        const users = JSON.parse(request.responseText); // переводим данные пользователя из формата json
+        userList.innerHTML = '';
+        users.forEach(function (user){ // создаём элемент списка на кажого пользователя
+          userList.innerHTML += `<li class="list-group-item">${user.name}(${user.age}) - ${user.email}</li>`;
+        });
+      }
+    }
+  }
+  getUsers();
+</script>
+</body>
+</html>
