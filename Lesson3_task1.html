@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+  <div>
+
+    <p> 
+      'Lorem ipsum dolor sit' amet, consectetur adipiscing el'it. Etiam ac suscipit nisi. Suspendisse sem est, vehicula at justo a, aliquam posuere enim.
+      Nam dictum metus nunc, vel semper ex vehicula vitae. Qui'sque at libero odio. Maecenas interdum rho'ncus posuere. Nam ex lorem, convallis ut luctus sit amet,
+      pretium quis metus. 'Etiam ac ligula pellentesque,' consectetur neque egestas, lacinia libero. 'Mauris tincidunt venenatis arcu ac consequat.' Phasellus convallis urna
+      eu turpis venenatis, id maximus erat placerat. 'Donec ligula justo,' consectetur vitae dui eget, aliquam mollis purus.
+    </p>
+
+    <p>
+      'Nulla ultrices libero' a varius hendrerit. Integer venenatis ultricies odio. Etiam posuere feugiat turpis, ac rhoncus mi sollicitudin vitae. Lorem ipsum dolor sit amet,
+      consectetur adipiscing elit. 'Proin in risus faucibus,' eleifend ex in, malesuada quam. In convallis aliquet nulla, ac vehicula elit vehicula non. Nunc congue 
+      varius nulla vitae sagittis. Fusce feugiat, tellus id euismod feugiat, dolor or'ci molestie tortor, id finibus arcu enim eget mauris. Quisque malesuada purus eu 
+      varius egestas. Nulla libero ex, dapibus nec nibh sed, fringilla placerat lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac 
+      turpis egestas.
+    </p>
+
+    <p>
+      'Integer eget massa eu risus varius varius.' Aenean n'ec porttitor leo. Quisque tempus urna nec lorem lobortis consequat. 'Fusce quis eleifend neque,' quis auctor 
+      sapien. Duis accumsan, eros ut maximus aliquam, magna diam congue odio, sit amet commodo ex magna at purus. Don'ec nec mauris eu risus facilisis efficitur. Aenean 
+      sem sapien, 'hendrerit eu luctus consectetur,' vulputate quis arcu. Maecenas luctus, magna sed sagittis rutrum, nisi libero ullamcorper augue, a convallis elit lorem 
+      vel turpis. Proin at justo sed ante vestibulum aliquam. 'Praesent condimentum' eros est. Mauris eu mattis libero. Cras volutpat eros sit amet massa viverra pretium. 
+      Aenean eget scelerisque ipsum, sit amet malesuada odio. Duis rhoncus pharetra ante quis porta.
+    </p>
+
+    <p>
+      'Nulla varius magna eu leo mattis blandit. 'Nulla ultrices eleifend finibus. 'Fusce pharetra id lectus pulvinar hendrerit.' Duis odio sem, egestas a placerat in, 
+      ullamcorper non est. 'Curabitur mollis mattis nibh vitae faucibus.' Curabitur tempus, sem pretium vulputate porta, velit purus vestibulum nisl, vel gravida elit 
+      purus ut ante. Vivamus sodales tortor non consequat vulputate. Donec id el'it varius, tristique lectus vitae, consectetur enim. Mauris tempus vel lacus non cursus. 
+      Aliquam urna mauris, varius nec nisi sed, molestie feugiat ligula.
+    </p>
+
+    <p>
+      'Nullam nec diam tortor. Vivamus ut enim sem.' Phasellus commodo, nisl vel blandit molestie, magna metus fringilla augue, ut ornare lacus mauris ac velit. Mauris 
+      faucibus arcu a ipsum lacinia, vel volutpat velit ultrices. Sed eu neque imperdiet, fermentum justo in, molestie lorem. 'Nulla facilisi.' Vivamus vitae elit odio. 
+      Donec maximus fringilla orci, condimentum vulputate eros blandit in. 'Aliquam rutrum ipsum massa.' 'Praesent malesuada leo sit amet purus commodo,' dapibus semper 
+      sapien vehicula. Vestibulum blandit porta justo nec cursus. Nullam posuere commodo nulla sit amet ullamcorper. 
+    </p>
+
+  </div>
+
+  <button type="submit" id ="changeButton">Замена</button>
+
+<script>
+
+  var button = document.getElementById('changeButton');
+ 
+  function change(){
+    const regExp = /(?<=\s)\'|\'(?=\s)|(?<=^)\'/gmi;
+    document.body.innerText = document.body.innerText.replace(regExp, '\"');
+  }
+  button.onclick = change;
+</script>
+</body>
+</html>
