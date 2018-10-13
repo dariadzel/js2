@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body>
+    <form name = 'form1' class="user-form" id = "user">
+      <div class="form-group">
+        <label for="inputName">Name</label>
+        <input type="text" class="form-control" name="inputName" placeholder="Name">
+      </div>
+
+      <div class="form-group">
+        <label for="inputPhone">Phone</label>
+        <input type="text" class="form-control" name="inputPhone" placeholder="Phone:+7(000)000-0000">
+      </div>
+
+      <div class="form-group">
+          <label for="inputEmail">Email</label>
+          <input type="email" class="form-control" name="inputEmail" placeholder="Email">
+      </div>
+
+      <div class="form-group">
+          <label for="inputMessage">Message</label>
+          <textarea class="form-control" name="message" rows="3"></textarea>
+      </div>
+
+      
+        <button type="submit" id = "submitButton" class="btn btn-primary">Submit</button>
+      </form>
+<script>
+
+  var form = document.form1;
+
+  function check(form) {
+    var name = document.form1.inputName.value;
+    var phone = document.form1.inputPhone.value;
+    var email = document.form1.inputEmail.value;
+    var message = document.form1.message.value;
+    const regExpName = /[a-zA-Zа-яёА-Я]/gi;
+    const regExpPhone = /\+7\(\d{3}\)\d{3}\-\d{4}/gi;
+    const regExpEmail = /\w+(\.?|\-?)\w+@\w+\.\w{2,3}/gi;
+    const regExpMessage = /\w+/gmi;
+    var bad = "";
+
+    if (!regExpName.test(name)){
+      bad += "Имя может содержать только симлолы A-Z или А-Я" + "\n";
+      document.form1.inputName.setAttribute("style", "box-shadow:0 0 10px red;");
+    } else{
+      document.form1.inputName.removeAttribute("style");
+    }
+
+    if (!regExpPhone.test(phone)){
+      bad += "Введите телефон в формате +7(000)000-0000" + "\n";
+      document.form1.inputPhone.setAttribute("style", "box-shadow:0 0 10px red;");
+    } else{
+      document.form1.inputPhone.removeAttribute("style");
+    }
+
+    if (!regExpEmail.test(email)){
+      bad += "Введите корректный адрес почты" + "\n";
+      document.form1.inputEmail.setAttribute("style", "box-shadow:0 0 10px red;");
+    } else{
+      document.form1.inputEmail.removeAttribute("style");
+    }
+
+    if (!regExpMessage.test(message)){
+      bad += "Введите сообщение" + "\n";
+      document.form1.message.setAttribute("style", "box-shadow:0 0 10px red;");
+    } else{
+      document.form1.message.removeAttribute("style");
+    }
+
+    if (bad != "") {
+      bad = "Неверно заполнена форма:" + "\n" + bad;
+      alert(bad);
+      return false;
+    }
+    return true;
+  }
+  var button = document.getElementById('submitButton');
+  button.onclick = check;
+  
+</script>
+</body>
+</html>
