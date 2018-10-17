@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body>
+<div class="container mt-4">
+    <form class="add-product-form">
+        <div class="form-group">
+            <label for="productName">Название товара</label>
+            <input type="text" class="form-control" id="productName">
+        </div>
+        <div class="form-group">
+            <label for="productPrice">Цена</label>
+            <input type="number" class="form-control" id="productPrice">
+        </div>
+        <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+    <h3 class="user-id mt-4"></h3>
+    <ul class="list-group cart mt-4"></ul>
+
+    <form class="add-comment-form mt-4">
+      <div class="form-group">
+          <label for="userComment">Комментарий</label>
+          <textarea class="form-control" id="userComment" rows="3"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Отправить</button>      
+    </form>
+    <div class="user-comment mt-4">
+      <ul class="list-group commList mt-4"></ul>
+    </div>   
+
+
+    
+</div>
+<script>
+let userId = '' // создаем глобальную переменную для хранения userId
+const productForm = document.querySelector('.add-product-form'); // забираем форму в переменную
+const [ productNameInput, productPriceInput ] = [...productForm.querySelectorAll('input')]; // получение инпутов в переменные c помощью spread-оператора и деструктуризации
+const userIdElm = document.querySelector('.user-id'); // получаем элемент в котором будем выводить ID пользователя
+const listElm = document.querySelector('.cart'); // получаем элемент в котором будем выводить содержимое корзины
+
+const commentForm = document.querySelector('.add-comment-form'); // забираем форму комментария в переменную
+const userCommentTextarea = commentForm.querySelector('textarea'); // получаем содержимое поля с комментарием
+const commentList = document.querySelector('.user-comment') // получаем элемент, в котором будем выводить комментарии
+const commentListElm = document.querySelector('.commList') // получаем элемент списка комментариев
+
+
+
+// описываем сервис, через который будем слать http запросы
+const httpService = function() {
+  const BASE_URL = 'http://89.108.65.123:8080'; // записываем URL нашего API в приватное поле, что бы избавиться от дублирования
+
+  // объявляем публичное поле, в котором описаны методы которые поддерживает наше API
+  this.methods = {
+    GET: 'GET',
+    POST: 'POST',
+    DELETE: 'DELETE',
+    PATCH: 'PATCH',
+  }
+
+  // реализация метода запросов на API, метод асинхронный
+  // https://ru.hexlet.io/courses/js-sync/lessons/async-await/theory_unit
+  this.request = async function (url = '/', method = 'GET', body) { // объявлем аргументы и выставляем значения по умолчанию для url и method
+    const options = body ? { // проверяем наличие аругмента body, при наличии генерируем options С полем body
+      method,
+      body: JSON.stringify(body), // сериализуем body в JSON
+    } : { method } // иначе добавлем в option только поле method
+    // P.S. { method } - это все равно что { method: method }
+
+    // создаем try-catch блок для перехвата ошибок
+    // https://learn.javascript.ru/exception
+    try {
+      // выполняем fetch запрос и десериализуем его результат из json в объект, с помощью await дожидаемся результа promise
+      return await fetch(`${BASE_URL}${url}`, options).then((res) => {
+        return res.json() // res.json возвращает Promise, который мы ждем с помощью await
+      }).catch((err) => console.log(err))
+    } catch (e) {
+      return false
+    }
+  }
+}
+
+const $http = new httpService() // создаем сам сервис на основе вышеописанного класса
+
+// описываем метод для получения пользователя(корзины), на вход принемаем ID пользователя
+const getUser = async (user) => {
+  if (user) return await $http.request(`/shop?user_id=${user}`, $http.methods.GET) // если в аругменты был получен ID, то выполняем запрос и передаем ID(получим существущую корзину)
+  return await $http.request('/shop', $http.methods.GET) // если ID нет, то выполняем запрос без параметров(тем самым создаем нового пользователя)
+}
+
+// метод добавления продукта в корзину, принемает ID пользователя(которому добавляем товар), название товара и цену
+const addProduct = async (userId, productName, price) => {
+  await $http.request(`/shop?user_id=${userId}&product=${productName}&price=${price}`, $http.methods.POST) // все запросы гоним через созданый сервис
+}
+
+// метод на удаления товара из корзины, на вход берет ID товара и ID пользователя у которого удален этот товар
+const removeProduct = async (productId, userId) => {
+  await $http.request(`/shop?user_id=${userId}&product_id=${productId}`, $http.methods.DELETE) // методы все забираем из нашего публичного поля methods
+}
+
+// создаем функцию инциализации прилоежния
+const init = async () => {
+  const user = await getUser() // кидаем запрос на создание пользователя, и ждем результата
+  userId = user.user_id // после запроса сохраняем ID пользователя(корзины) в глобальную перменную
+  createList(user.cart) // выводим список товаров на страницу. она тут у нас пустая всегда, но хотя бы ID корзины(пользователя) выведем
+}
+
+// метод обновления данных в корзине, по сути не очень то и нужен тк можем забирать данные которые возрващают методы, там уже обновленные данные
+const updateCart = async () => {
+  const user = await getUser(userId) // получаем данные корзины, для этого отдаем ID пользователя
+  createList(user.cart) // перерисовываем DOM
+}
+
+// метод для отрисовки списка товаров в DOM, принемавет массив товаров
+const createList = (items) => {
+  listElm.innerHTML = '' // затираем текущий
+  userIdElm.innerHTML = userId // выводит ID корзины
+  items.forEach(item => { // запускаем перебор товаров
+    listElm.innerHTML += `<li class="list-group-item" data-id="${item.product_id}">${item.product}</li>` // для каждого товара содаем запись
+  });
+  [...listElm.querySelectorAll('li')].forEach(li => { //перебираем созданые список, что бы развесить событие клика
+    li.addEventListener('click', async function () {
+      console.log(this.getAttribute('data-id'))
+      await removeProduct(this.getAttribute('data-id'), userId) // по клику забираем аттрибут с ID товара и удаляем его передав в нужный метод этот ID
+      updateCart() // после удаления обновляем корзину
+    })
+  })
+}
+
+// навешиваем событие отправки на форму. правильнее это делать в init
+productForm.addEventListener('submit', async (e) => {
+  e.preventDefault(); // предотвращаем отправку по умолчанию
+  const productName = productNameInput.value // забираем название продукта
+  const productPrice = productPriceInput.value //забираем цену продукта
+  if(productName.length === 0 || productPrice.length === 0 ) return // если одно из полей пустое - прерываем функцию
+  await addProduct(userId, productName, Number(productPrice)) // добавлем товар в корзину
+  updateCart() //обновляем список товаров
+})
+
+init() // вызываем инициализацию
+
+
+
+
+
+// метод для получения имеющихся комментариев
+const getComments = async () => {
+  return await $http.request('/comments', $http.methods.GET) // запрос без параметров(тем самым создаем нового пользователя)
+}
+
+// метод добавления комментария, принемает текст комментария
+const addComment = async (commentText) => {
+  await $http.request(`/comments?text=${commentText}`, $http.methods.POST) // отправляем запрос через сервис
+}
+
+// метод для получения информации об оценённом комментарии (с новым количеством лайков)
+const checkComment = async (commentId) => {
+  await $http.request(`/comments?comment_id=${commentId}`, $http.methods.PATCH) // отправляем запрос через сервис
+}
+
+// метод на удаления комментария, на вход берет ID комментария, который удаляет
+const removeComment = async (commentId) => {
+  await $http.request(`/comments?comment_id=${commentId}`, $http.methods.DELETE) // методы все забираем из нашего публичного поля methods
+}
+
+// список комментариев
+const createCommentList = async (comments) => {
+  commentListElm.innerHTML = ''
+  const allComments = await getComments() // кидаем запрос на комментарии, хранящиеся на сервере
+  allComments.forEach(function (comments){ // создаём элемент списка на каждый комментарий
+    commentListElm.innerHTML += `<li class="list-group-item" data-comm_id="${comments.comment_id}">${comments.text} Likes: ${comments.likes}</li>`;
+  });
+  [...commentListElm.querySelectorAll('li')].forEach(li => { //перебираем созданый список, что бы развесить событие клика
+    li.addEventListener('click', async function () { // по клику ставим лайк комментарию
+      await checkComment(this.getAttribute('data-comm_id'))
+      createCommentList() 
+    })
+  });
+  [...commentListElm.querySelectorAll('li')].forEach(li => { //перебираем созданый список, что бы развесить событие клика
+    li.addEventListener('contextmenu', async function () { // кликом правой кнопки мыши удаляем комментарий
+      await removeComment(this.getAttribute('data-comm_id'))
+      createCommentList() 
+    }) 
+  })
+
+
+}
+
+// создаем функцию инциализации приложения с комментариями
+const initComments = async () => {
+  createCommentList()
+  commentForm.addEventListener('submit', async (e) => { // вешаем событие на отправку комментария
+    e.preventDefault(); // предотвращаем отправку по умолчанию
+    const commentText = userCommentTextarea.value // забираем содержание комментария
+    if(commentText.length === 0) return // если поле пустое - прерываем функцию
+    await addComment(commentText) // добавлем комментарий
+    createCommentList() //обновляем список комментариев
+  })
+}
+
+initComments()
+
+
+</script>
+</body>
+</html>
