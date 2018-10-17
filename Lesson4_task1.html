@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <title>Document</title>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+    <style>
+     #tabs{
+	width: 700px;
+	margin: 40px auto 0;
+}
+	#tabs .tab{
+		background-color: #fff;
+    margin-bottom: 3px;
+	}
+	#tabs .tab:after{
+		content: "";
+		display: block;
+		clear: both;
+		height: 0;
+	}
+		#tabs .tabsList .tab{
+			float: left;
+			cursor: pointer;
+			border-right: 1px solid #f2f4f9;
+      padding: 10px 20px;
+		}
+		#tabs .tabs .tab:last-child{
+			border-right: none;
+		}
+		#tabs .tabsList .tab:hover,
+		#tabs .tabsList .tab.active{
+			background-color: #c7e7f9;
+			color: #1d7ee4;
+		}
+	#tabs .content{
+    background-color: #fff;
+    float: right;
+	}
+		#tabs .content .tabContent{
+			display: none;
+			padding: 15px 10px;
+		}
+		#tabs .content .tabContent.active{
+			display: block;
+		}
+    </style>
+    
+</head>
+<body>
+    <script>
+
+      $(function () {
+        $('#tabs').on('click', '.tab', function(){
+          const tab = $('#tabs .tab');
+          const content = $('#tabs .content .tabContent');
+
+          tab.removeClass('active');
+          content.removeClass('active');
+
+          $(this).addClass('active');
+          content.eq($(this).index()).addClass('active');
+        });
+      });  
+
+    </script>
+
+
+  <div id="tabs">
+    <div class="tabsList">
+
+      <div class="tab active">Tab1</div>
+      <div class="tab">Tab2</div>
+      <div class="tab">Tab3</div>
+
+    </div>
+
+    <div class="content">
+
+      <div class="tabContent active">
+
+        <p>
+          'Integer eget massa eu risus varius varius.' Aenean n'ec porttitor leo. Quisque tempus urna nec lorem lobortis consequat. 'Fusce quis eleifend neque,' quis auctor 
+          sapien. Duis accumsan, eros ut maximus aliquam, magna diam congue odio, sit amet commodo ex magna at purus. Don'ec nec mauris eu risus facilisis efficitur. Aenean 
+          sem sapien, 'hendrerit eu luctus consectetur,' vulputate quis arcu. Maecenas luctus, magna sed sagittis rutrum, nisi libero ullamcorper augue, a convallis elit lorem 
+          vel turpis. Proin at justo sed ante vestibulum aliquam. 'Praesent condimentum' eros est. Mauris eu mattis libero. Cras volutpat eros sit amet massa viverra pretium. 
+          Aenean eget scelerisque ipsum, sit amet malesuada odio. Duis rhoncus pharetra ante quis porta.
+        </p>
+
+      </div>  
+      <div class="tabContent">
+
+        <p>
+          'Nulla varius magna eu leo mattis blandit. 'Nulla ultrices eleifend finibus. 'Fusce pharetra id lectus pulvinar hendrerit.' Duis odio sem, egestas a placerat in, 
+          ullamcorper non est. 'Curabitur mollis mattis nibh vitae faucibus.' Curabitur tempus, sem pretium vulputate porta, velit purus vestibulum nisl, vel gravida elit 
+          purus ut ante. Vivamus sodales tortor non consequat vulputate. Donec id el'it varius, tristique lectus vitae, consectetur enim. Mauris tempus vel lacus non cursus. 
+          Aliquam urna mauris, varius nec nisi sed, molestie feugiat ligula.
+        </p>
+
+      </div>
+      <div class="tabContent">
+
+        <p>
+          'Nullam nec diam tortor. Vivamus ut enim sem.' Phasellus commodo, nisl vel blandit molestie, magna metus fringilla augue, ut ornare lacus mauris ac velit. Mauris 
+          faucibus arcu a ipsum lacinia, vel volutpat velit ultrices. Sed eu neque imperdiet, fermentum justo in, molestie lorem. 'Nulla facilisi.' Vivamus vitae elit odio. 
+          Donec maximus fringilla orci, condimentum vulputate eros blandit in. 'Aliquam rutrum ipsum massa.' 'Praesent malesuada leo sit amet purus commodo,' dapibus semper 
+          sapien vehicula. Vestibulum blandit porta justo nec cursus. Nullam posuere commodo nulla sit amet ullamcorper. 
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
