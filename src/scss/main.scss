@@ -1,0 +1,12 @@
+$bg-color: pink;
+$main-text: rgb(120, 71, 184);
+
+body {
+ background: $bg-color;
+    p {
+        font-size: 20px;
+        color: $main-text;
+        text-align: center;
+    }
+ }
+    

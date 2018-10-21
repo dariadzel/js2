@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack:///./src/scss/main.scss"],"names":[],"mappings":"AAAA;AACA,mBAAmB;AACnB;AACA;AACA;AACA,uBAAuB","file":"main.css","sourcesContent":["body {\n  background: pink; }\n  body p {\n    font-size: 20px;\n    color: #7847b8;\n    text-align: center; }\n"],"sourceRoot":""}
