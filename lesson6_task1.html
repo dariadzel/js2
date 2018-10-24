@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.10.3/themes/ui-lightness/jquery-ui.css">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.2.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.11.2/jquery-ui.min.js"></script>
+    <style>
+        .draggable { width: 100px; height: 100px; margin-top: 15px; margin-bottom: 15px; padding: 0.5em; border: 0.5px solid lightblue; float: left; }
+        .droppable { width: 800px; height: 300px; padding: 0.5em; float: left; margin: 20px; }
+        #dialog-message {visibility: hidden;}
+    </style>
+
+    <title>Document</title>
+</head>
+<body>
+    <div id="dialog-message" title="Сообщение об ошибке"></div>
+
+    <form name = 'form1' class="user-form" id = "user">
+      <div class="form-group">
+        <label for="inputName">Имя</label>
+        <input type="text" class="form-control inputName effect" name="inputName" placeholder="Имя">
+      </div>
+
+      <div class="form-group">
+        <label for="inputPhone">Номер телефона</label>
+        <input type="text" class="form-control inputPhone effect" name="inputPhone" placeholder="Номер телефона:+7(000)000-0000">
+      </div>
+
+      <div class="form-group">
+          <label for="inputEmail">Email</label>
+          <input type="email" class="form-control inputEmail effect" id="inputEmail" name="inputEmail" placeholder="Email">
+      </div>
+
+      <div class="form-group">
+        <label for="inputDate">Дата доставки заказа</label>
+        <input type="text" class="form-control inputData effect" id="inputDate" name="inputDate" placeholder="dd/mm/yyyy">
+      </div>
+
+      <div class="form-group">
+        <label for="inputCity">Город</label>
+        <input type="text" class="form-control inputCity effect" name="inputCity" placeholder="Город">
+      </div>
+        
+      <div class="form-group">
+          <label for="inputMessage">Текстовое сообщение</label>
+          <textarea class="form-control inputMessage" name="message" rows="3"></textarea>
+      </div>
+    
+        <button type="submit" id = "submitButton" class="btn btn-primary">Отправить</button>
+      </form>
+
+      <div class="item draggable">Товар 1</div>
+      <div class="item draggable">Товар 2</div>
+      <div class="item draggable">Товар 3</div>
+      <div class="item draggable">Товар 4</div>
+      <div class="item draggable">Товар 5</div>
+
+      <div class="ui-widget-header droppable cart">
+          <p>Положите выбранные товары в корзину</p>
+      </div>
+<script>
+
+  let form = document.form1;
+
+  function check(form) {
+    let name = document.querySelector('.inputName').value;
+    let phone = document.querySelector('.inputPhone').value;
+    let email = document.querySelector('.inputEmail').value;
+    let message = document.querySelector('.inputMessage').value;
+
+    let nameBad = document.querySelector('.inputName');
+    let phoneBad = document.querySelector('.inputPhone');
+    let emailBad = document.querySelector('.inputEmail');
+    let messageBad = document.querySelector('.inputMessage');
+    
+    const regExpName = /[a-zA-Zа-яёА-Я]/gi;
+    const regExpPhone = /\+7\(\d{3}\)\d{3}\-\d{4}/gi;
+    const regExpEmail = /\w+(\.?|\-?)\w+@\w+\.\w{2,3}/gi;
+    const regExpMessage = /\w+/gmi;
+    let bad = "";
+
+    $( function() {
+      $( '#dialog-message' ).dialog({autoOpen: false});
+    } );
+
+
+    if (!regExpName.test(name)){
+     // $('<p>Имя может содержать только симлолы A-Z или А-Я</p>').appendTo('#dialog-message');
+      bad += "Имя может содержать только симлолы A-Z или А-Я" + "\n";
+      nameBad.setAttribute("style", "box-shadow:0 0 10px red;");
+    } else{
+      $('#dialog-message').remove('<p>Имя может содержать только симлолы A-Z или А-Я</p>');
+    }
+
+    if (!regExpPhone.test(phone)){
+    //  $('<p>Введите телефон в формате +7(000)000-0000</p>').appendTo('#dialog-message');
+      bad += "Введите телефон в формате +7(000)000-0000" + "\n";
+      phoneBad.setAttribute("style", "box-shadow:0 0 10px red;");
+    } else{
+      phoneBad.removeAttribute("style");
+    }
+
+    if (!regExpEmail.test(email)){
+    //  $('<p>Введите корректный адрес почты</p>').appendTo('#dialog-message');
+      bad += "Введите корректный адрес почты" + "\n";
+      emailBad.setAttribute("style", "box-shadow:0 0 10px red;");
+    } else{
+      emailBad.removeAttribute("style");
+    }
+
+    if (!regExpMessage.test(message)){
+    //  $('<p>Введите сообщение</p>').appendTo('#dialog-message');
+      bad += "Введите сообщение" + "\n";
+      messageBad.setAttribute("style", "box-shadow:0 0 10px red;");
+    } else{
+      messageBad.removeAttribute("style");
+    }
+
+    if (bad != "") {
+      bad = "Неверно заполнена форма:" + "\n" + bad;
+   //  $("#dialog-message").dialog('open').css('visibility', 'visible');
+      alert(bad);
+      return false;
+    }
+    return true;
+  }
+
+
+  const button = document.getElementById('submitButton');
+  button.onclick = check;
+
+    $( function() {
+    $( "#inputDate" ).datepicker({
+      monthNames: ['Январь', 'Февраль', 'Март', 'Апрель','Май', 'Июнь', 'Июль', 'Август', 'Сентябрь','Октябрь', 'Ноябрь', 'Декабрь'],
+      dayNamesMin: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
+      firstDay: 1,
+    });    	
+  } );
+
+
+
+  $('.inputCity').on('click', function(){
+    const citiesName = [];
+    $.ajax({
+        url:'http://89.108.65.123/cities',
+        success: function(data){
+          const cities = JSON.parse(data);
+          for(let i = 0; i < cities.length; i++){
+            citiesName.push(cities[i].name);
+          }
+          return citiesName;
+        },
+        error:  function(error){
+        console.log(error)
+        }
+      });
+
+     $('.inputCity').autocomplete({
+      source: citiesName,
+      minLength: 3
+    })
+  });
+
+    $( function() {
+    $( ".draggable" ).draggable();
+    $( "#droppable" ).droppable({
+      drop: function( event, ui ) {
+        $( this )
+          .addClass( "ui-state-highlight" )
+          .find( "p" )
+      }
+    });
+  } );
+
+
+  
+</script>
+</body>
+</html>
